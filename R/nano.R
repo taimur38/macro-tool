@@ -20,7 +20,7 @@ nano_ui <- function(id, db) {
           tabPanelBody("plot_compare", ""),
           tabPanelBody("plot_compare_lines", ""),
           tabPanelBody("plot_scatter",
-                       selectizeInput("indicator2", "Indicator",
+                       selectizeInput(NS(id, "indicator2"), "Indicator",
                                       choices=NULL,
                        )
           )
@@ -46,8 +46,13 @@ nano_ui <- function(id, db) {
 nano_server <- function(id, country, comparators, db, labels, reverse_labels) {
   
   moduleServer(id, function(input, output, session) {
+
     updateSelectizeInput(session, 'indicator', choices=labels, server=TRUE, selected="weo_ngdp_rpch")
     updateSelectizeInput(session, 'indicator2', choices=labels, server=TRUE, selected="wdi_nv_agr_totl_zs")
+
+    observeEvent(input$plot_type, {
+        updateTabsetPanel(session, "explore_switcher", selected=input$plot_type)
+    })
     
     
     indicator1 <- eventReactive(input$explore_update, input$indicator)
@@ -59,9 +64,9 @@ nano_server <- function(id, country, comparators, db, labels, reverse_labels) {
       if (input$plot_type == "plot_compare") {
         plot_compare(
           indicator1(), 
-          ccode=input$country, 
+          ccode=country(), 
           df=db, 
-          comparators=input$comparators, 
+          comparators=comparators(), 
           range=year_range(), 
           reverse_labels=reverse_labels
         ) %>%
@@ -69,9 +74,9 @@ nano_server <- function(id, country, comparators, db, labels, reverse_labels) {
       } else if (input$plot_type == "plot_compare_lines") {
         plot_compare_lines(
           indicator1(), 
-          ccode=input$country, 
+          ccode=country(), 
           df=db, 
-          comparators=input$comparators, 
+          comparators=comparators(), 
           range=year_range(),
           reverse_labels=reverse_labels
         ) %>%
@@ -82,8 +87,8 @@ nano_server <- function(id, country, comparators, db, labels, reverse_labels) {
           indicator1(), 
           indicator2(), 
           df = db, 
-          ccode=input$country, 
-          comparators=input$comparators, 
+          ccode=country(), 
+          comparators=comparators(), 
           range=year_range(), 
           reverse_labels=reverse_labels
         ) %>%

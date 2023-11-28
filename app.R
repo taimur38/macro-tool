@@ -19,39 +19,36 @@ theme_set(theme_few())
 
 ui <- fixedPage(
                 navbarPage(
-                           "Macro Dashboard",
-                           collapsible = TRUE,
-                           fluidRow(
+                        "Macro Dashboard",
+                        collapsible = TRUE,
+                        fluidRow(
                                     column(6,
-                                           align="center",
-                                           selectInput("country", "Country", choices = countries, selected = "PAK")
+                                        align="center",
+                                        selectInput("country", "Country", choices = countries, selected = "PAK")
                                     ), 
                                     column(6,
-                                           selectInput("comparators", 
-                                                       "Comparators", 
-                                                       choices = countries, 
-                                                       multiple = TRUE, 
-                                                       selected = c("IND", "BGD", "EGY", "VNM", "IDN", "LKA", "MAR")
-                                           )
+                                        selectInput("comparators", 
+                                                    "Comparators", 
+                                                    choices = countries, 
+                                                    multiple = TRUE, 
+                                                    selected = c("IND", "BGD", "EGY", "VNM", "IDN", "LKA", "MAR")
+                                        )
                                     )
-                           ),
-                           tabPanel("Explore", explore_ui("explore", db)),
-                           tabPanel("BB-NN", bbnn_ui("bbnn", db)),
-                           tabPanel("Nano", nano_ui("nano", db))
+                        ),
+                        tabPanel("Explore", explore_ui("explore", db)),
+                        tabPanel("BB-NN", bbnn_ui("bbnn", db)),
+                        tabPanel("Nano", nano_ui("nano", db))
                 )
 
 )
 
 server <- function(input, output, session) {
 
-    observeEvent(input$plot_type, {
-        updateTabsetPanel(session, "explore_switcher", selected=input$plot_type)
-    })
 
     explore_server("explore", 
-                   reactive(input$country), 
-                   reactive(input$comparators), 
-                   db, labels, reverse_labels
+                reactive(input$country), 
+                reactive(input$comparators), 
+                db, labels, reverse_labels
     )
 
     bbnn_server("bbnn", 
@@ -60,9 +57,9 @@ server <- function(input, output, session) {
                 db, labels, reverse_labels
     )
     nano_server("nano", 
-                   reactive(input$country), 
-                   reactive(input$comparators), 
-                   db, labels, reverse_labels
+                reactive(input$country), 
+                reactive(input$comparators), 
+                db, labels, reverse_labels
     )
 
     # this is a hack to get automatic reloading to work nicely 
@@ -75,4 +72,3 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
-
