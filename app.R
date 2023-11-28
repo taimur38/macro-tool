@@ -36,7 +36,8 @@ ui <- fixedPage(
                                     )
                            ),
                            tabPanel("Explore", explore_ui("explore", db)),
-                           tabPanel("BB-NN", bbnn_ui("bbnn", db))
+                           tabPanel("BB-NN", bbnn_ui("bbnn", db)),
+                           tabPanel("Nano", nano_ui("nano", db))
                 )
 
 )
@@ -57,6 +58,11 @@ server <- function(input, output, session) {
                 reactive(input$country), 
                 reactive(input$comparators), 
                 db, labels, reverse_labels
+    )
+    nano_server("nano", 
+                   reactive(input$country), 
+                   reactive(input$comparators), 
+                   db, labels, reverse_labels
     )
 
     # this is a hack to get automatic reloading to work nicely 
