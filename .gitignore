@@ -1,2 +1,5 @@
 data/
 .Rproj.user
+.DS_STORE
+*.swp
+.Rapp.history
