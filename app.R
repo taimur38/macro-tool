@@ -38,7 +38,8 @@ ui <- fixedPage(
                         tabPanel("Explore", explore_ui("explore", db)),
                         tabPanel("BB-NN", bbnn_ui("bbnn", db)),
                         tabPanel("Nano", nano_ui("nano", db)),
-                        tabPanel("Guille", guille_ui("guille", db))
+                        tabPanel("Guille", guille_ui("guille", db)),
+                        tabPanel("FB", fb_ui("fb", db))
                 )
 
 )
@@ -70,6 +71,11 @@ server <- function(input, output, session) {
                 db, labels, reverse_labels
     )
 
+    fb_server("fb",
+                  reactive(input$country),
+                  reactive(input$comparators),
+                  db, labels, reverse_labels
+    )
 
     # this is a hack to get automatic reloading to work nicely
     # in development mode.
