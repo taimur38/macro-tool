@@ -41,7 +41,8 @@ ui <- fixedPage(
                         tabPanel("Nano", nano_ui("nano", db)),
                         tabPanel("Guille", guille_ui("guille", db)),
                         tabPanel("FB", fb_ui("fb", db)),
-                        tabPanel("LV", lv_ui("lv", db))
+                        tabPanel("LV", lv_ui("lv", db)),
+                        tabPanel("Debt",debt_ui("debt",db))
 
                 )
 
@@ -85,6 +86,11 @@ server <- function(input, output, session) {
               db, labels, reverse_labels
     )
 
+    debt_server("debt",
+              reactive(input$country),
+              reactive(input$comparators),
+              db, labels, reverse_labels
+    )
 
 
     # this is a hack to get automatic reloading to work nicely
