@@ -17,6 +17,7 @@ countries <- db %>%
 
 theme_set(theme_few())
 
+
 ui <- fixedPage(
                 navbarPage(
                         "Macro Dashboard",
@@ -39,7 +40,9 @@ ui <- fixedPage(
                         tabPanel("BB-NN", bbnn_ui("bbnn", db)),
                         tabPanel("Nano", nano_ui("nano", db)),
                         tabPanel("Guille", guille_ui("guille", db)),
-                        tabPanel("FB", fb_ui("fb", db))
+                        tabPanel("FB", fb_ui("fb", db)),
+                        tabPanel("LV", lv_ui("lv", db))
+
                 )
 
 )
@@ -51,7 +54,6 @@ server <- function(input, output, session) {
                 reactive(input$comparators),
                 db, labels, reverse_labels
     )
-
 
     bbnn_server("bbnn",
                 reactive(input$country),
@@ -76,6 +78,14 @@ server <- function(input, output, session) {
                   reactive(input$comparators),
                   db, labels, reverse_labels
     )
+
+    lv_server("lv",
+              reactive(input$country),
+              reactive(input$comparators),
+              db, labels, reverse_labels
+    )
+
+
 
     # this is a hack to get automatic reloading to work nicely
     # in development mode.

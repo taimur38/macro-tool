@@ -16,7 +16,7 @@ explore_ui <- function(id, db) {
                                         tabsetPanel(
                                                     id=NS(id, "explore_switcher"),
                                                     type="hidden",
-                                                    
+
                                                     tabPanelBody("plot_compare", ""),
                                                     tabPanelBody("plot_compare_lines", ""),
                                                     tabPanelBody("plot_scatter",
@@ -62,20 +62,20 @@ explore_server <- function(id, country, comparators, db, labels, reverse_labels)
 
             if (input$plot_type == "plot_compare") {
                 plot_compare(
-                             indicator1(), 
-                             ccode=country(), 
-                             df=db, 
-                             comparators=comparators(), 
-                             range=year_range(), 
+                             indicator1(),
+                             ccode=country(),
+                             df=db,
+                             comparators=comparators(),
+                             range=year_range(),
                              reverse_labels=reverse_labels
                 ) %>%
                 ggplotly()
             } else if (input$plot_type == "plot_compare_lines") {
                 plot_compare_lines(
-                                   indicator1(), 
-                                   ccode=country(), 
-                                   df=db, 
-                                   comparators=comparators(), 
+                                   indicator1(),
+                                   ccode=country(),
+                                   df=db,
+                                   comparators=comparators(),
                                    range=year_range(),
                                    reverse_labels=reverse_labels
                 ) %>%
@@ -83,12 +83,12 @@ explore_server <- function(id, country, comparators, db, labels, reverse_labels)
 
             } else {
                 plot_scatter(
-                             indicator1(), 
-                             indicator2(), 
-                             df = db, 
-                             ccode=country(), 
-                             comparators=comparators(), 
-                             range=year_range(), 
+                             indicator1(),
+                             indicator2(),
+                             df = db,
+                             ccode=country(),
+                             comparators=comparators(),
+                             range=year_range(),
                              reverse_labels=reverse_labels
                 ) %>%
                 ggplotly()
