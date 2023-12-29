@@ -26,6 +26,10 @@ guille_ui <- function(id, db) {
         selectInput(NS(id, "test"), "Test Input", choices=c("A", "B", "C"), selected="A")
       ),
       mainPanel(
+        tags$h3(""),
+        
+        tags$h2(""),
+        tags$h3("BBNN"),
         plotlyOutput(NS(id, "bbnn_plot")),
         tags$h2(""),
         tags$h3("Internal Balance"),
