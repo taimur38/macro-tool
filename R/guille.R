@@ -23,11 +23,12 @@ guille_ui <- function(id, db) {
                     step = 1,
                     value=c(1990, 2021)
         ),
-        selectInput(NS(id, "test"), "Test Input", choices=c("A", "B", "C"), selected="A")
+        selectInput(NS(id, "test"), "Test Input", choices=c("A", "B", "C"), selected="A"),
+        actionButton(NS(id, "explore_update"), "Update")
       ),
       mainPanel(
         tags$h3(""),
-        
+        tags$h3("Test"),
         tags$h2(""),
         tags$h3("BBNN"),
         plotlyOutput(NS(id, "bbnn_plot")),
@@ -68,7 +69,11 @@ guille_server <- function(id, country, comparators, db, labels, reverse_labels) 
     })
 
     output$external_balance_plot <- renderPlot({
-
+      db %>%
+        filter(weo_countrycodeiso == country()) %>%
+        ggplot(aes_string(x="year", y=input$external_balance)) +
+        geom_line() +
+        geom_point()
     })
 
   })
