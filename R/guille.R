@@ -27,7 +27,7 @@ guille_ui <- function(id, db) {
         actionButton(NS(id, "explore_update"), "Update")
       ),
       mainPanel(
-        tags$h3(""),
+        tags$h2(""),
         tags$h3("Test Stacked Area Plot"),
         plotlyOutput(NS(id, "current_account_plot")),
         tags$h2(""),
@@ -54,6 +54,20 @@ guille_server <- function(id, country, comparators, db, labels, reverse_labels) 
     updateSelectizeInput(session, 'internal_balance', choices = labels, server = TRUE, selected = "wdi_fp_cpi_totl_zg")
     updateSelectizeInput(session, 'external_balance', choices = labels, server = TRUE, selected = "wdi_bn_cab_xoka_gd_zs")
 
+db2 <- db %>%
+  select(year, wdi_bx_gsr_mrch_cd, wdi_bx_gsr_nfsv_cd, wdi_bx_gsr_fcty_cd, wdi_bx_trf_curr_cd, wdi_bm_gsr_mrch_cd, wdi_bm_gsr_nfsv_cd, wdi_bm_gsr_fcty_cd, wdi_bm_trf_prvt_cd)
+
+db2_long <- db2 %>%
+  pivot_longer(cols = -year, names_to = "Category", values_to = "Value")
+
+    output$current_account_plot <- renderPlot({
+      db2_long %>%
+        filter(weo_countrycodeiso == country()) %>%
+        ggplot(aes_string(x = "year", y = input$Value, fill = input$Category)) +
+        geom_line() +
+        geom_point()
+    })
+
     output$bbnn_plot <- renderPlotly({
       # show the bbnn plot based on indicators selected
       # for the year chosen
@@ -67,14 +81,6 @@ guille_server <- function(id, country, comparators, db, labels, reverse_labels) 
         ggplot(aes_string(x = "year", y = input$internal_balance)) +
         geom_line() +
         geom_point()
-    })
-
-    output$current_account_plot <- renderPlot({
-      db %>%
-        filter(weo_countrycodeiso == country()) %>%
-        gather(variable, value, wdi_bx_gsr_mrch_cd, wdi_bx_gsr_nfsv_cd, wdi_bx_gsr_fcty_cd, wdi_bx_trf_curr_cd, wdi_bm_gsr_mrch_cd, wdi_bm_gsr_nfsv_cd, wdi_bm_gsr_fcty_cd, wdi_bm_trf_prvt_cd) %>% # nolint: line_length_linter.
-        ggplot(aes(x = "year", y = value, fill = variable)) +
-        geom_area()
     })
 
     output$external_balance_plot <- renderPlot({
