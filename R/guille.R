@@ -28,8 +28,11 @@ guille_ui <- function(id, db) {
       ),
       mainPanel(
         tags$h2(""),
-        tags$h3("Test Stacked Area Plot"),
-        plotlyOutput(NS(id, "current_account_plot")),
+        tags$h3("Test Current Account Inflows"),
+        plotlyOutput(NS(id, "current_account_inflows")),
+        tags$h2(""),
+        tags$h3("Test Current Account Outflows"),
+        plotlyOutput(NS(id, "current_account_outflows")),
         tags$h2(""),
         tags$h3("BBNN"),
         plotlyOutput(NS(id, "bbnn_plot")),
@@ -55,18 +58,35 @@ guille_server <- function(id, country, comparators, db, labels, reverse_labels) 
     updateSelectizeInput(session, 'external_balance', choices = labels, server = TRUE, selected = "wdi_bn_cab_xoka_gd_zs")
 
 db2 <- db %>%
-  select(year, wdi_bx_gsr_mrch_cd, wdi_bx_gsr_nfsv_cd, wdi_bx_gsr_fcty_cd, wdi_bx_trf_curr_cd, wdi_bm_gsr_mrch_cd, wdi_bm_gsr_nfsv_cd, wdi_bm_gsr_fcty_cd, wdi_bm_trf_prvt_cd)
+  select(year, weo_countrycodeiso, wdi_bx_gsr_mrch_cd, wdi_bx_gsr_nfsv_cd, wdi_bx_gsr_fcty_cd, wdi_bx_trf_curr_cd)
 
 db2_long <- db2 %>%
-  pivot_longer(cols = -year, names_to = "Category", values_to = "Value")
+  pivot_longer(cols = -c(year, weo_countrycodeiso), names_to = "Category", values_to = "Value")
 
-    output$current_account_plot <- renderPlot({
-      db2_long %>%
+    output$current_account_inflows <- renderPlotly({
+      p = db2_long %>%
         filter(weo_countrycodeiso == country()) %>%
-        ggplot(aes_string(x = "year", y = input$Value, fill = input$Category)) +
-        geom_line() +
-        geom_point()
+        ggplot(aes(x = year, y = Value, fill = Category, label = reverse_labels[Category])) +
+        geom_area(color="white")
+
+      ggplotly(p)
     })
+
+db3 <- db %>%
+  select(year, weo_countrycodeiso, wdi_bm_gsr_mrch_cd, wdi_bm_gsr_nfsv_cd, wdi_bm_gsr_fcty_cd, wdi_bm_trf_prvt_cd)
+
+db3_long <- db3 %>%
+  pivot_longer(cols = -c(year, weo_countrycodeiso), names_to = "Category", values_to = "Value")
+
+    output$current_account_outflows <- renderPlotly({
+      f = db3_long %>%
+        filter(weo_countrycodeiso == country()) %>%
+        ggplot(aes(x = year, y = Value, fill = Category, label = reverse_labels[Category])) +
+        geom_area(color="white")
+
+      ggplotly(f)
+    })
+
 
     output$bbnn_plot <- renderPlotly({
       # show the bbnn plot based on indicators selected

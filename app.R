@@ -18,6 +18,7 @@ countries <- db %>%
 theme_set(theme_few())
 
 
+
 ui <- fixedPage(
                 navbarPage(
                         "Macro Dashboard",
@@ -103,3 +104,4 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
+
