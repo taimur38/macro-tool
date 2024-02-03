@@ -28,10 +28,10 @@ guille_ui <- function(id, db) {
       ),
       mainPanel(
         tags$h2(""),
-        tags$h3("Test Current Account Inflows"),
+        tags$h3("Current Account Inflows"),
         plotlyOutput(NS(id, "current_account_inflows")),
         tags$h2(""),
-        tags$h3("Test Current Account Outflows"),
+        tags$h3("Current Account Outflows"),
         plotlyOutput(NS(id, "current_account_outflows")),
         tags$h2(""),
         tags$h3("BBNN"),
@@ -66,8 +66,10 @@ db2_long <- db2 %>%
     output$current_account_inflows <- renderPlotly({
       p = db2_long %>%
         filter(weo_countrycodeiso == country()) %>%
-        ggplot(aes(x = year, y = Value, fill = Category, label = reverse_labels[Category])) +
-        geom_area(color="white")
+    ggplot(aes(x = year, y = Value, fill = str_sub(reverse_labels[Category], 1, 13), 
+               label = str_sub(reverse_labels[Category], 1, 13))) +
+    geom_area(color = "white") +
+    theme(text = element_text(size = 7))
 
       ggplotly(p)
     })
@@ -78,14 +80,18 @@ db3 <- db %>%
 db3_long <- db3 %>%
   pivot_longer(cols = -c(year, weo_countrycodeiso), names_to = "Category", values_to = "Value")
 
-    output$current_account_outflows <- renderPlotly({
-      f = db3_long %>%
-        filter(weo_countrycodeiso == country()) %>%
-        ggplot(aes(x = year, y = Value, fill = Category, label = reverse_labels[Category])) +
-        geom_area(color="white")
+output$current_account_outflows <- renderPlotly({
+  f <- db3_long %>%
+    filter(weo_countrycodeiso == country()) %>%
+    ggplot(aes(x = year, y = Value, fill = str_sub(reverse_labels[Category], 1, 13), 
+               label = str_sub(reverse_labels[Category], 1, 13))) +
+    geom_area(color = "white") +
+    theme(text = element_text(size = 7))
 
-      ggplotly(f)
-    })
+  ggplotly(f)
+})
+
+
 
 
     output$bbnn_plot <- renderPlotly({

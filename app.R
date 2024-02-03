@@ -18,7 +18,6 @@ countries <- db %>%
 theme_set(theme_few())
 
 
-
 ui <- fixedPage(
                 navbarPage(
                         "Macro Dashboard",
